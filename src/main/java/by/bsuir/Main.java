@@ -1,7 +1,6 @@
-package by.bsuir.course;
+package by.bsuir;
 
-import by.bsuir.course.database.DataBaseWorker;
-import by.bsuir.course.entities.MainWindow;
+import by.bsuir.entities.MainWindow;
 
 public class Main {
 
@@ -13,7 +12,5 @@ public class Main {
        /* DataBaseWorker dataBaseWorker = new DataBaseWorker();
         dataBaseWorker.connect();*/
 
-      /*  Server server = new Server();
-        server.start();*/
     }
 }

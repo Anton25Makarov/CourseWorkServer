@@ -1,4 +1,4 @@
-package by.bsuir.course.server;
+package by.bsuir.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -1,6 +1,6 @@
-package by.bsuir.course.entities;
+package by.bsuir.entities;
 
-import by.bsuir.course.server.ServerThread;
+import by.bsuir.server.ServerThread;
 
 import javax.swing.*;
 import java.awt.*;
