@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="sportgames@localhost" uuid="ad63da77-9617-4c65-bab4-275126d3f65a">
+    <data-source source="LOCAL" name="course_work_judging_system@localhost" uuid="4f17b2d1-ce6a-4830-8252-a4f7e2ccca6c">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/sportgames</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/course_work_judging_system</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
         <property name="zeroDateTimeBehavior" value="convertToNull" />

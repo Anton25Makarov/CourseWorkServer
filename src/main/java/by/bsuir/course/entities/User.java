@@ -1,4 +1,4 @@
-package by.bsuir.entities;
+package by.bsuir.course.entities;
 
 import java.io.Serializable;
 

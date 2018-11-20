@@ -1,12 +1,14 @@
-package by.bsuir.server;
+package by.bsuir.course.server;
 
 
-import by.bsuir.database.DataBaseWorker;
-import by.bsuir.entities.User;
+import by.bsuir.course.database.DataBaseWorker;
+import by.bsuir.course.entities.Referee;
+import by.bsuir.course.entities.User;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ServerThread extends Thread {
@@ -29,14 +31,10 @@ public class ServerThread extends Thread {
                 TimeUnit.MILLISECONDS.sleep(50);
                 Object object = objectInputStream.readObject();
 
-                boolean answer = chooseAction(whatToDo, object);
+                chooseAction(whatToDo, object, objectOutputStream);
                 TimeUnit.MILLISECONDS.sleep(50);
 
-                if (answer) {
-                    objectOutputStream.writeObject("true");
-                } else {
-                    objectOutputStream.writeObject("false");
-                }
+
             }
         } catch (SocketException e) {
             System.out.println("Клиент отсоединился");
@@ -52,19 +50,35 @@ public class ServerThread extends Thread {
         }
     }
 
-    private boolean chooseAction(String whatToDo, Object object) {
+    private void chooseAction(String whatToDo, Object object, ObjectOutputStream objectOutputStream) throws IOException {
         switch (whatToDo) {
             case "authorisation":
-                return isAuthorised(object);
+                String answer = isAuthorised(object);
+                if (answer != null) {
+                    objectOutputStream.writeObject(answer);
+                } else {
+                    objectOutputStream.writeObject("false");
+                }
+                break;
+            case "getAll":
+
+                List<Referee> referees = readRefereesFromBd();
+                objectOutputStream.writeObject(referees);
+                break;
             default:
                 throw new IllegalArgumentException();
         }
     }
 
-    private boolean isAuthorised(Object object) {
-        User user = (User) object;
+    private String isAuthorised(Object object) {
+        Referee referee = (Referee) object;
         dataBaseWorker = DataBaseWorker.getInstance();
-        return dataBaseWorker.authorisation(user);
+        return dataBaseWorker.isAuthorised(referee);
+    }
+
+    private List<Referee> readRefereesFromBd() {
+        dataBaseWorker = DataBaseWorker.getInstance();
+        return dataBaseWorker.readReferees();
     }
 
     private void addUser(Object object) {

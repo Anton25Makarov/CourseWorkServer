@@ -1,6 +1,6 @@
-package by.bsuir;
+package by.bsuir.course;
 
-import by.bsuir.entities.MainWindow;
+import by.bsuir.course.window.MainWindow;
 
 public class Main {
 
