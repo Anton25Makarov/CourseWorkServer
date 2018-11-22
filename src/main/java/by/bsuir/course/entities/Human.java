@@ -1,12 +1,13 @@
 package by.bsuir.course.entities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Human {
-    private String name;
-    private String surname;
-    private int age;
-    private Address address;
+public abstract class Human implements Serializable {
+    protected String name;
+    protected String surname;
+    protected int age;
+    protected Address address;
 
     public String getName() {
         return name;

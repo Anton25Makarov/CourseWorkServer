@@ -1,16 +1,19 @@
 package by.bsuir.course.entities;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Sport {
-    private String name;
-    private Map<Referee, Mark> marks;
+public abstract class Sport implements Serializable {
+    protected String name;
+    protected Map<Referee, Mark> marks;
 
     public Sport(String name) {
+        marks = new HashMap<>();
         this.name = name;
     }
 
-    public abstract void addMark(Mark mark);
+    public abstract void addResult(Referee referee, Mark mark);
 
     public String getName() {
         return name;

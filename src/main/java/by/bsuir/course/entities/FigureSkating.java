@@ -1,6 +1,8 @@
 package by.bsuir.course.entities;
 
-public class FigureSkating extends Sport {
+import java.io.Serializable;
+
+public class FigureSkating extends Sport implements Serializable {
     private static final double MAX_MARK = 6;
     private static final int COUNT_OF_JUDGES = 4;
 
@@ -10,7 +12,7 @@ public class FigureSkating extends Sport {
     }
 
     @Override
-    public void addMark(Mark mark) {
-
+    public void addResult(Referee referee, Mark mark) {
+        marks.put(referee, mark);
     }
 }

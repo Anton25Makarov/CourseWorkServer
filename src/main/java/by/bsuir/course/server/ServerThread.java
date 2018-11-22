@@ -3,6 +3,7 @@ package by.bsuir.course.server;
 
 import by.bsuir.course.database.DataBaseWorker;
 import by.bsuir.course.entities.Referee;
+import by.bsuir.course.entities.Sportsman;
 import by.bsuir.course.entities.User;
 
 import java.io.*;
@@ -61,9 +62,11 @@ public class ServerThread extends Thread {
                 }
                 break;
             case "getAll":
-
                 List<Referee> referees = readRefereesFromBd();
+                List<Sportsman> sportsmen = readSportsmanFromBd(referees);
+
                 objectOutputStream.writeObject(referees);
+                objectOutputStream.writeObject(sportsmen);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -81,9 +84,10 @@ public class ServerThread extends Thread {
         return dataBaseWorker.readReferees();
     }
 
-    private void addUser(Object object) {
-        User user = (User) object;
-        // Add in BD ...
+    private List<Sportsman> readSportsmanFromBd(List<Referee> referees) {
+        dataBaseWorker = DataBaseWorker.getInstance();
+        return dataBaseWorker.readSportsmen(referees);
     }
+
 }
 

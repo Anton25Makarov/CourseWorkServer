@@ -1,5 +1,7 @@
 package by.bsuir.course.entities;
 
-public abstract class Mark {
-    private double maxMark;
+import java.io.Serializable;
+
+public abstract class Mark implements Serializable {
+//    private double maxMark;
 }

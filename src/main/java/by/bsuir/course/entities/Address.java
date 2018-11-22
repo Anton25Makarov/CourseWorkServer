@@ -1,8 +1,9 @@
 package by.bsuir.course.entities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Address {
+public class Address implements Serializable {
     private String country;
     private String city;
 

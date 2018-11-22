@@ -56,12 +56,5 @@ public class Referee extends Human implements Serializable {
         return Objects.hash(login, password, sport);
     }
 
-    @Override
-    public String toString() {
-        return "Referee{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", sport='" + sport + '\'' +
-                '}';
-    }
+
 }

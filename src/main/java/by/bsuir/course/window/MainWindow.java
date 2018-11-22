@@ -30,38 +30,7 @@ public class MainWindow extends JFrame {
         setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        panel = new JPanel();
-        panel.setLayout(null);
-
-        startButton = new JButton("Запуск");
-        startButton.setLocation(100, 50);
-        startButton.setSize(100, 50);
-
-        endButton = new JButton("Стоп");
-        endButton.setLocation(250, 50);
-        endButton.setSize(100, 50);
-
-        socketStatus = new JLabel("Сокет закрыт");
-        socketStatus.setLocation(375, 400);
-        socketStatus.setSize(100, 100);
-        socketStatus.setBackground(Color.pink);
-
-        activePort = new JLabel("Автивный порт: " + ACTIVE_PORT);
-        activePort.setLocation(20, 400);
-        activePort.setSize(150, 100);
-        activePort.setBackground(Color.pink);
-
-        connectedList = new JTextArea();
-        connectedList.setLocation(50, 120);
-        connectedList.setSize(380, 300);
-
-        panel.add(startButton);
-        panel.add(endButton);
-        panel.add(socketStatus);
-        panel.add(activePort);
-        panel.add(connectedList);
-
-        add(panel);
+        init();
 
         Runnable startServer = () -> {
             try {
@@ -104,5 +73,40 @@ public class MainWindow extends JFrame {
                 }
             }
         });
+    }
+
+    private void init() {
+        panel = new JPanel();
+        panel.setLayout(null);
+
+        startButton = new JButton("Запуск");
+        startButton.setLocation(100, 50);
+        startButton.setSize(100, 50);
+
+        endButton = new JButton("Стоп");
+        endButton.setLocation(250, 50);
+        endButton.setSize(100, 50);
+
+        socketStatus = new JLabel("Сокет закрыт");
+        socketStatus.setLocation(375, 400);
+        socketStatus.setSize(100, 100);
+        socketStatus.setBackground(Color.pink);
+
+        activePort = new JLabel("Автивный порт: " + ACTIVE_PORT);
+        activePort.setLocation(20, 400);
+        activePort.setSize(150, 100);
+        activePort.setBackground(Color.pink);
+
+        connectedList = new JTextArea();
+        connectedList.setLocation(50, 120);
+        connectedList.setSize(380, 300);
+
+        panel.add(startButton);
+        panel.add(endButton);
+        panel.add(socketStatus);
+        panel.add(activePort);
+        panel.add(connectedList);
+
+        add(panel);
     }
 }
