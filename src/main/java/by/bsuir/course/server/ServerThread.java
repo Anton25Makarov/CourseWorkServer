@@ -4,7 +4,6 @@ package by.bsuir.course.server;
 import by.bsuir.course.database.DataBaseWorker;
 import by.bsuir.course.entities.Referee;
 import by.bsuir.course.entities.Sportsman;
-import by.bsuir.course.entities.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -28,11 +27,11 @@ public class ServerThread extends Thread {
 
             while (!incoming.isClosed()) {
                 String whatToDo = (String) objectInputStream.readObject();
-                System.out.println(whatToDo);
+                System.out.println("User choose: " + whatToDo);
                 TimeUnit.MILLISECONDS.sleep(50);
                 Object object = objectInputStream.readObject();
 
-                chooseAction(whatToDo, object, objectOutputStream);
+                chooseAction(whatToDo, object, objectOutputStream, objectInputStream);
                 TimeUnit.MILLISECONDS.sleep(50);
 
 
@@ -51,7 +50,10 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void chooseAction(String whatToDo, Object object, ObjectOutputStream objectOutputStream) throws IOException {
+    private void chooseAction(String whatToDo, Object object,
+                              ObjectOutputStream objectOutputStream,
+                              ObjectInputStream objectInputStream)
+            throws IOException {
         switch (whatToDo) {
             case "authorisation":
                 String answer = isAuthorised(object);
@@ -67,6 +69,18 @@ public class ServerThread extends Thread {
 
                 objectOutputStream.writeObject(referees);
                 objectOutputStream.writeObject(sportsmen);
+                break;
+            case "setAll":
+                try {
+                    List<Sportsman> sportsmenForAdd = (List<Sportsman>) objectInputStream.readObject();
+
+                    List<Referee> refereesForAdd = (List<Referee>) objectInputStream.readObject();
+
+                    objectOutputStream.writeObject(addSportsmenAndRefereesInBd(sportsmenForAdd, refereesForAdd));
+
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -89,5 +103,9 @@ public class ServerThread extends Thread {
         return dataBaseWorker.readSportsmen(referees);
     }
 
+    private String addSportsmenAndRefereesInBd(List<Sportsman> sportsmen, List<Referee> referees) {
+        dataBaseWorker = DataBaseWorker.getInstance();
+        return dataBaseWorker.addSportsmenAndReferees(sportsmen, referees);
+    }
 }
 

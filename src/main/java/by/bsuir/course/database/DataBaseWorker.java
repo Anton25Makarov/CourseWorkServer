@@ -5,6 +5,7 @@ import by.bsuir.course.entities.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DataBaseWorker {
     private static final String URL = "jdbc:mysql://localhost:3306/course_work_judging_system?autoReconnect=true&useSSL=false";
@@ -189,7 +190,6 @@ public class DataBaseWorker {
                     }
 
 
-
                     outer:
                     for (Sportsman sportsman : sportsmen) {
                         if (sportsman.getName().equals(sportsmanName)
@@ -210,5 +210,189 @@ public class DataBaseWorker {
             e.printStackTrace();
         }
         return sportsmen;
+    }
+
+    public synchronized String addSportsmenAndReferees(List<Sportsman> sportsmen, List<Referee> referees) {
+        try (Statement statement = connection.createStatement()) {
+            if (!connection.isClosed()) {
+
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 0;");
+                statement.addBatch("TRUNCATE TABLE marks");
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 1;");
+                statement.executeBatch();
+                statement.clearBatch();
+
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 0;");
+                statement.addBatch("TRUNCATE TABLE sportsman");
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 1;");
+                statement.executeBatch();
+                statement.clearBatch();
+
+
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 0;");
+                statement.addBatch("TRUNCATE TABLE referee");
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 1;");
+                statement.executeBatch();
+                statement.clearBatch();
+
+
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 0;");
+                statement.addBatch("TRUNCATE TABLE human");
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 1;");
+                statement.executeBatch();
+
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 0;");
+                statement.addBatch("TRUNCATE TABLE address");
+                statement.addBatch("SET FOREIGN_KEY_CHECKS = 1;");
+                statement.executeBatch();
+                statement.clearBatch();
+
+
+                ResultSet resultSet;
+
+                ////////////////////////////////////////////////////////////insert Sportsmen
+                for (Sportsman sportsman : sportsmen) {
+                    statement.execute("INSERT into human (name, surname, age)\n" +
+                            "VALUES ('" + sportsman.getName() + "',\n" +
+                            "        '" + sportsman.getSurname() + "', \n" +
+                            "        '" + sportsman.getAge() + "');");
+
+                    resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() as lastHumanId;");
+                    int humanId = 0;
+                    while (resultSet.next()) {
+                        humanId = Integer.valueOf(resultSet.getString("lastHumanId"));
+                    }
+
+                    statement.execute("INSERT into address (country, city)\n" +
+                            "VALUES ('" + sportsman.getAddress().getCountry() + "',\n" +
+                            "        '" + sportsman.getAddress().getCity() + "');");
+
+                    resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() as lastAddressId;");
+                    int addressId = 0;
+                    while (resultSet.next()) {
+                        addressId = Integer.valueOf(resultSet.getString("lastAddressId"));
+                    }
+
+                    statement.execute("INSERT into sportsman (sport, address_id, human_id)\n" +
+                            "VALUES ('" + sportsman.getPerformance().getName() + "', \n" +
+                            "        '" + addressId + "', \n" +
+                            "        '" + humanId + "');");
+                }
+                ////////////////////////////////////////////////////////////insert Referees
+                for (Referee referee : referees) {
+                    statement.execute("INSERT into human (name, surname, age)\n" +
+                            "VALUES ('" + referee.getName() + "',\n" +
+                            "        '" + referee.getSurname() + "', \n" +
+                            "        '" + referee.getAge() + "');");
+
+                    resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() as lastHumanId;");
+                    int humanId = 0;
+                    while (resultSet.next()) {
+                        humanId = Integer.valueOf(resultSet.getString("lastHumanId"));
+                    }
+                    statement.execute("INSERT into address (country, city)\n" +
+                            "VALUES ('" + referee.getAddress().getCountry() + "',\n" +
+                            "        '" + referee.getAddress().getCity() + "');");
+
+                    resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() as lastAddressId;");
+                    int addressId = 0;
+                    while (resultSet.next()) {
+                        addressId = Integer.valueOf(resultSet.getString("lastAddressId"));
+                    }
+
+                    statement.execute("INSERT into referee (sport, login, password, address_id, human_id) \n" +
+                            "VALUES ('" + referee.getSport() + "', \n" +
+                            "        '" + referee.getLogin() + "', \n" +
+                            "        '" + referee.getPassword() + "',\n" +
+                            "         " + addressId + ",\n" +
+                            "         " + humanId + ");");
+                }
+                //////////////////////////////////////////////////////////// insert into Marks
+                for (Sportsman sportsman : sportsmen) {
+                    if (sportsman.getPerformance().getMarks().isEmpty()) {
+                        continue;
+                    }
+                    /////////////////////// find sportsman ID
+                    resultSet = statement.executeQuery("SELECT sportsman.id as sportsmanId\n" +
+                            "FROM sportsman\n" +
+                            "       JOIN human h on sportsman.human_id = h.id\n" +
+                            "WHERE h.name = '" + sportsman.getName() + "'\n" +
+                            "  AND h.surname = '" + sportsman.getSurname() + "';");
+                    int sportsmanId = 0;
+                    while (resultSet.next()) {
+                        sportsmanId = Integer.valueOf(resultSet.getString("sportsmanId"));
+                    }
+                    //////////////////////
+                    Map<Referee, Mark> markMap = sportsman.getPerformance().getMarks();
+
+
+                    for (Map.Entry<Referee, Mark> entry : markMap.entrySet()) {
+                        Referee referee = entry.getKey();
+                        Mark mark = entry.getValue();
+
+                        /////////////////////// find referee ID
+                        resultSet = statement.executeQuery("SELECT id as refereeId\n" +
+                                "from referee\n" +
+                                "where login = '" + referee.getLogin() + "'\n" +
+                                "  and password = '" + referee.getPassword() + "' ");
+                        int refereeId = 0;
+                        while (resultSet.next()) {
+                            refereeId = Integer.valueOf(resultSet.getString("refereeId"));
+                        }
+                        //////////////////////
+
+                        switch (sportsman.getPerformance().getName()) {
+                            case "Фигурное катание":
+                                statement.execute("INSERT INTO marks (ski_jumping_mark, \n" +
+                                        "                   diving_mark, \n" +
+                                        "                   skating_mark_1, \n" +
+                                        "                   skating_mark_2, \n" +
+                                        "                   sportsman_id, \n" +
+                                        "                   referee_id)\n" +
+                                        "VALUES (0, 0, \n" +
+                                        "        " + ((FigureSkatingMark) mark).getPresentationMark() + ", \n" +
+                                        "        " + ((FigureSkatingMark) mark).getTechnicalMark() + ", \n" +
+                                        "        " + sportsmanId + ", \n" +
+                                        "        " + refereeId + ");");
+                                break;
+                            case "Дайвинг":
+                                statement.execute("INSERT INTO marks (ski_jumping_mark, \n" +
+                                        "                   diving_mark, \n" +
+                                        "                   skating_mark_1, \n" +
+                                        "                   skating_mark_2, \n" +
+                                        "                   sportsman_id, \n" +
+                                        "                   referee_id)\n" +
+                                        "VALUES (0,\n" +
+                                        "        " + ((DivingMark) mark).getMark() + ", \n" +
+                                        "        0, \n" +
+                                        "        0, \n" +
+                                        "        " + sportsmanId + ", \n" +
+                                        "        " + refereeId + ");");
+                                break;
+                            case "Прыжки с трамплина":
+                                statement.execute("INSERT INTO marks (ski_jumping_mark, \n" +
+                                        "                   diving_mark, \n" +
+                                        "                   skating_mark_1, \n" +
+                                        "                   skating_mark_2, \n" +
+                                        "                   sportsman_id, \n" +
+                                        "                   referee_id)\n" +
+                                        "VALUES (" + ((SkiJumpingMark) mark).getMark() + ",\n" +
+                                        "        0, \n" +
+                                        "        0, \n" +
+                                        "        0, \n" +
+                                        "        " + sportsmanId + ", \n" +
+                                        "        " + refereeId + ");");
+                                break;
+                            default:
+                                throw new UnsupportedOperationException();
+                        }
+                    }
+                }
+                return "successful inserting all";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "false";
     }
 }
