@@ -43,7 +43,7 @@ public class DataBaseWorker {
                         "FROM admin\n" +
                         "WHERE login like '" + referee.getLogin() + "' and password like '" + referee.getPassword() + "';");
 
-                while (resultSetAdmin.next()) {
+                if (resultSetAdmin.next()) {
                     return "Admin";
                 }
 

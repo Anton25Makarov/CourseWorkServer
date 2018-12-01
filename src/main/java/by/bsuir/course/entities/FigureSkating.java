@@ -1,10 +1,11 @@
 package by.bsuir.course.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class FigureSkating extends Sport implements Serializable {
-    private static final double MAX_MARK = 6;
-    private static final int COUNT_OF_JUDGES = 4;
+    private double maxMark = 6;
+    private int countOfReferees = 2;
 
     public FigureSkating(String name) {
         super(name);
@@ -14,5 +15,30 @@ public class FigureSkating extends Sport implements Serializable {
     @Override
     public void addResult(Referee referee, Mark mark) {
         marks.put(referee, mark);
+    }
+
+    @Override
+    public int getCountOfReferees() {
+        return countOfReferees;
+    }
+
+    @Override
+    public double getMaxMark() {
+        return maxMark;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        FigureSkating that = (FigureSkating) o;
+        return Double.compare(that.maxMark, maxMark) == 0 &&
+                countOfReferees == that.countOfReferees;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), maxMark, countOfReferees);
     }
 }

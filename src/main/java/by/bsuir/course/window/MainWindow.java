@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,7 +41,7 @@ public class MainWindow extends JFrame {
 
                     Socket sock = serverSocket.accept();
                     System.out.println(sock.getInetAddress().getHostName() + " connected");
-                    connectedList.append("Подключился: " + sock.getInetAddress() + "\n");
+                    connectedList.append("Подключился: " + sock.getInetAddress() + " - " + (new Date()).toString() + "\n");
 
                     ServerThread server = new ServerThread(sock);
                     server.start();//запуск потока
@@ -98,8 +99,9 @@ public class MainWindow extends JFrame {
         activePort.setBackground(Color.pink);
 
         connectedList = new JTextArea();
-        connectedList.setLocation(50, 120);
-        connectedList.setSize(380, 300);
+        connectedList.setLocation(40, 120);
+        connectedList.setSize(400, 300);
+        connectedList.setEditable(false);
 
         panel.add(startButton);
         panel.add(endButton);
