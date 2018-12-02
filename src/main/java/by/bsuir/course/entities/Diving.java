@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Diving extends Sport implements Serializable {
     private double maxMark = 10;
-    private int countOfReferees = 7;
+    private int countOfReferees = 3;
 
     public Diving(String name) {
         super(name);

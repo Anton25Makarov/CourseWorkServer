@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class SkiJumping extends Sport implements Serializable {
     private double maxMark = 20;
-    private int countOfReferees = 5;
+    private int countOfReferees = 4;
 
     public SkiJumping(String name) {
         super(name);

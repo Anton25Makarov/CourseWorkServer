@@ -343,6 +343,15 @@ public class DataBaseWorker {
 
                         switch (sportsman.getPerformance().getName()) {
                             case "Фигурное катание":
+                                double figureSkatingMarkPresentation;
+                                double figureSkatingMarkTechnical;
+                                if (mark == null) {
+                                    figureSkatingMarkPresentation = 0;
+                                    figureSkatingMarkTechnical = 0;
+                                } else {
+                                    figureSkatingMarkPresentation = ((FigureSkatingMark) mark).getPresentationMark();
+                                    figureSkatingMarkTechnical = ((FigureSkatingMark) mark).getTechnicalMark();
+                                }
                                 statement.execute("INSERT INTO marks (ski_jumping_mark, \n" +
                                         "                   diving_mark, \n" +
                                         "                   skating_mark_1, \n" +
@@ -350,12 +359,18 @@ public class DataBaseWorker {
                                         "                   sportsman_id, \n" +
                                         "                   referee_id)\n" +
                                         "VALUES (0, 0, \n" +
-                                        "        " + ((FigureSkatingMark) mark).getPresentationMark() + ", \n" +
-                                        "        " + ((FigureSkatingMark) mark).getTechnicalMark() + ", \n" +
+                                        "        " + figureSkatingMarkPresentation + ", \n" +
+                                        "        " + figureSkatingMarkTechnical + ", \n" +
                                         "        " + sportsmanId + ", \n" +
                                         "        " + refereeId + ");");
                                 break;
                             case "Дайвинг":
+                                double markDiving;
+                                if (mark == null) {
+                                    markDiving = 0;
+                                } else {
+                                    markDiving = ((DivingMark) mark).getMark();
+                                }
                                 statement.execute("INSERT INTO marks (ski_jumping_mark, \n" +
                                         "                   diving_mark, \n" +
                                         "                   skating_mark_1, \n" +
@@ -363,20 +378,26 @@ public class DataBaseWorker {
                                         "                   sportsman_id, \n" +
                                         "                   referee_id)\n" +
                                         "VALUES (0,\n" +
-                                        "        " + ((DivingMark) mark).getMark() + ", \n" +
+                                        "        " + markDiving + ", \n" +
                                         "        0, \n" +
                                         "        0, \n" +
                                         "        " + sportsmanId + ", \n" +
                                         "        " + refereeId + ");");
                                 break;
                             case "Прыжки с трамплина":
+                                double markSkiJumping;
+                                if (mark == null) {
+                                    markSkiJumping = 0;
+                                } else {
+                                    markSkiJumping = ((SkiJumpingMark) mark).getMark();
+                                }
                                 statement.execute("INSERT INTO marks (ski_jumping_mark, \n" +
                                         "                   diving_mark, \n" +
                                         "                   skating_mark_1, \n" +
                                         "                   skating_mark_2, \n" +
                                         "                   sportsman_id, \n" +
                                         "                   referee_id)\n" +
-                                        "VALUES (" + ((SkiJumpingMark) mark).getMark() + ",\n" +
+                                        "VALUES (" + markSkiJumping + ",\n" +
                                         "        0, \n" +
                                         "        0, \n" +
                                         "        0, \n" +
