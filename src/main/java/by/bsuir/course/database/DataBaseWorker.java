@@ -1,6 +1,7 @@
 package by.bsuir.course.database;
 
 import by.bsuir.course.entities.*;
+import by.bsuir.course.factory.SportFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DataBaseWorker {
-    private static final String URL = "jdbc:mysql://localhost:3306/course_work_judging_system?autoReconnect=true&useSSL=false";
-    private static final String LOGIN = "root";
-    private static final String PASSWORD = "MySQL18662507";
+    private static String URL;
+    private static String LOGIN;
+    private static String PASSWORD;
     private static volatile DataBaseWorker instance;
     private static Connection connection;
 
@@ -20,6 +21,7 @@ public class DataBaseWorker {
                 if (instance == null) {
                     instance = new DataBaseWorker();
                     try {
+                        loadDataBaseProperties();
                         connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -28,6 +30,16 @@ public class DataBaseWorker {
             }
         }
         return instance;
+    }
+
+    private static void loadDataBaseProperties(){
+        Configurator configurator = new Configurator();
+
+        DataBaseProperties dataBaseProperties = configurator.getProperties();
+
+        URL = dataBaseProperties.getUrl();
+        LOGIN = dataBaseProperties.getLogin();
+        PASSWORD = dataBaseProperties.getPassword();
     }
 
     public Connection getConnection() {
@@ -132,7 +144,7 @@ public class DataBaseWorker {
 
 
                     String sportsmanSport = resultSet.getString("sport");
-                    Sport sport;
+                    /*Sport sport;
                     switch (sportsmanSport) {
                         case "Фигурное катание":
                             sport = new FigureSkating(sportsmanSport);
@@ -145,7 +157,11 @@ public class DataBaseWorker {
                             break;
                         default:
                             throw new UnsupportedOperationException();
-                    }
+                    }*/
+
+                    SportFactory sportFactory = new SportFactory();
+                    Sport sport = sportFactory.createSport(sportsmanSport);
+
                     sportsman.setPerformance(sport);
 
                     sportsmen.add(sportsman);

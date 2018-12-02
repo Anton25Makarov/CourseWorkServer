@@ -1,0 +1,5 @@
+{
+  "url": "jdbc:mysql://localhost:3306/course_work_judging_system?autoReconnect\u003dtrue\u0026useSSL\u003dfalse",
+  "login": "root",
+  "password": "MySQL18662507"
+}
