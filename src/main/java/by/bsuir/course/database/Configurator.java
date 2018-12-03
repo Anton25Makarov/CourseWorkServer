@@ -20,8 +20,6 @@ public class Configurator {
             for (String string : strings) {
                 json += string;
             }
-           /* byte[] bytes = Files.readAllBytes(Paths.get(FILE_PATH));
-            json = String.valueOf(bytes);*/
 
         } catch (IOException e) {
             e.printStackTrace();

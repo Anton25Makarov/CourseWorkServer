@@ -42,10 +42,6 @@ public class DataBaseWorker {
         PASSWORD = dataBaseProperties.getPassword();
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
     public synchronized String isAuthorised(Referee referee) {
         try (Statement statement = connection.createStatement()) {
             if (!connection.isClosed()) {
@@ -60,12 +56,12 @@ public class DataBaseWorker {
                 }
 
                 // check for referee
-                ResultSet resultSet = statement.executeQuery("SELECT sport\n" +
+                ResultSet resultSet = statement.executeQuery("SELECT login\n" +
                         "FROM referee\n" +
                         "WHERE login like '" + referee.getLogin() + "' and password like '" + referee.getPassword() + "';");
                 String refereeSport = null;
                 while (resultSet.next()) {
-                    refereeSport = resultSet.getString("sport");
+                    refereeSport = resultSet.getString("login");
                 }
                 if (refereeSport != null) {
                     return refereeSport;
